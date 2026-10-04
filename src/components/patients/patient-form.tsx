@@ -18,12 +18,20 @@ import { patientFormSchema, type PatientFormValues } from "@/lib/schemas";
 
 type PatientFormProps = {
     defaultValues?: Partial<PatientFormValues>;
+    // When provided, a doctor dropdown is shown (used when editing)
+    doctors?: { _id: string; name: string }[];
     submitLabel: string;
     onSubmit: (values: PatientFormValues) => Promise<unknown>;
     onCancel: () => void;
 };
 
-export function PatientForm({ defaultValues, submitLabel, onSubmit, onCancel }: PatientFormProps) {
+export function PatientForm({
+    defaultValues,
+    doctors,
+    submitLabel,
+    onSubmit,
+    onCancel,
+}: PatientFormProps) {
     const {
         register,
         handleSubmit,
@@ -107,6 +115,29 @@ export function PatientForm({ defaultValues, submitLabel, onSubmit, onCancel }: 
                     {...register("condition")}
                 />
             </FormField>
+
+            {doctors && (
+                <FormField id="patient-doctor" label="Doctor" error={errors.doctor?.message}>
+                    <Controller
+                        control={control}
+                        name="doctor"
+                        render={({ field }) => (
+                            <Select value={field.value ?? ""} onValueChange={field.onChange}>
+                                <SelectTrigger id="patient-doctor" className="w-full" aria-invalid={!!errors.doctor}>
+                                    <SelectValue placeholder="Select doctor" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {doctors.map((d) => (
+                                        <SelectItem key={d._id} value={d._id}>
+                                            {d.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                </FormField>
+            )}
 
             <FormField id="patient-phone" label="Phone (optional)" error={errors.phone?.message}>
                 <Input
