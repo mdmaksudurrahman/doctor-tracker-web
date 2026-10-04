@@ -32,6 +32,7 @@ export const patientFormSchema = z.object({
         .string()
         .trim()
         .refine((v) => v === "" || (v.length >= 7 && v.length <= 20), "Phone must be 7–20 characters"),
+    doctor: z.string().optional(),
 });
 
 export type PatientFormValues = z.infer<typeof patientFormSchema>;
@@ -43,4 +44,5 @@ export const toPatientPayload = (values: PatientFormValues) => ({
     condition: values.condition,
     // The API treats phone as optional, so don't send an empty string
     ...(values.phone ? { phone: values.phone } : {}),
+    ...(values.doctor ? { doctor: values.doctor } : {}),
 });
