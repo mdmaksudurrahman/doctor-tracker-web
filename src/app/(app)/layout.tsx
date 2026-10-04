@@ -1,5 +1,6 @@
 import { Topbar } from "@/components/layout/topbar";
 import { SidebarContent } from "@/components/layout/sidebar";
+import { SlowRequestNotice } from "@/components/layout/slow-request-notice";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -21,6 +22,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     {children}
                 </main>
             </div>
+
+            <SlowRequestNotice />
         </div>
     );
 }

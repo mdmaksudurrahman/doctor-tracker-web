@@ -12,9 +12,11 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
                     queries: {
                         staleTime: 30_000,
                         refetchOnWindowFocus: false,
-                        // Never retry client errors (400, 401, 404...), retry server errors twice
-                        retry: (failureCount, error) =>
-                            !(error instanceof ApiError && error.status < 500) && failureCount < 2,
+                        // Retry network and server errors twice. Client errors (400, 401, 404...) never improve on retry.
+                        retry: (failureCount, error) => {
+                            const clientError = error instanceof ApiError && error.status >= 400 && error.status < 500;
+                            return !clientError && failureCount < 2;
+                        },
                     },
                 },
             })

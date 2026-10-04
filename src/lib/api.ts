@@ -33,12 +33,18 @@ function toQuery(params?: Params) {
 export async function api<T>(path: string, options: Options = {}): Promise<T> {
     const { method = "GET", body, params } = options;
 
-    const res = await fetch(`/api${path}${toQuery(params)}`, {
-        method,
-        headers: body ? { "Content-Type": "application/json" } : undefined,
-        body: body ? JSON.stringify(body) : undefined,
-        credentials: "include",
-    });
+    let res: Response;
+    try {
+        res = await fetch(`/api${path}${toQuery(params)}`, {
+            method,
+            headers: body ? { "Content-Type": "application/json" } : undefined,
+            body: body ? JSON.stringify(body) : undefined,
+            credentials: "include",
+        });
+    } catch {
+        // fetch only rejects when no response came back at all (offline, server down)
+        throw new ApiError(0, "Can't reach the server. Check your connection and try again.");
+    }
 
     const data = await res.json().catch(() => null);
 
@@ -51,7 +57,11 @@ export async function api<T>(path: string, options: Options = {}): Promise<T> {
             // eslint-disable-next-line @next/next/no-location-assign-relative-destination
             window.location.assign("/login");
         }
-        throw new ApiError(res.status, data?.message ?? "Something went wrong", data?.errors);
+        const fallback =
+            res.status >= 500
+                ? "The server is having trouble right now. Please try again in a moment."
+                : "Something went wrong";
+        throw new ApiError(res.status, data?.message ?? fallback, data?.errors);
     }
 
     return data as T;

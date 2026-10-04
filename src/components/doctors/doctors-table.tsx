@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableCaption, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate, getInitials } from "@/lib/format";
 import type { Doctor } from "@/types";
 
@@ -12,6 +12,7 @@ export function DoctorsTable({ doctors }: { doctors: Doctor[] }) {
             {/* Desktop: table */}
             <div className="hidden rounded-lg border bg-card md:block">
                 <Table>
+                    <TableCaption className="sr-only">Doctors</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Doctor</TableHead>

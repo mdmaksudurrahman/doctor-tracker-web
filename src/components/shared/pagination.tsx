@@ -19,7 +19,7 @@ export function Pagination({ meta, onPageChange }: PaginationProps) {
             aria-label="Pagination"
             className="flex flex-col items-center justify-between gap-3 sm:flex-row"
         >
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground" aria-live="polite">
                 Showing <span className="font-medium text-foreground">{from}–{to}</span> of{" "}
                 <span className="font-medium text-foreground">{total}</span>
             </p>

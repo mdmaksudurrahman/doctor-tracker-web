@@ -3,7 +3,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableCaption, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/lib/format";
 import type { Patient } from "@/types";
 
@@ -53,6 +53,7 @@ export function PatientsTable({ patients, showDoctor = false, onEdit, onDelete }
             {/* Desktop: table */}
             <div className="hidden rounded-lg border bg-card md:block">
                 <Table>
+                    <TableCaption className="sr-only">Patients</TableCaption>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Patient</TableHead>
