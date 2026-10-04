@@ -5,13 +5,28 @@ import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/shared/error-state";
 import { PageHeader } from "@/components/shared/page-header";
-import { BreakdownDonut } from "@/components/dashboard/breakdown-donut";
 import { ChartCard, ChartCardSkeleton } from "@/components/dashboard/chart-card";
-import { PatientsOverTimeChart } from "@/components/dashboard/patients-over-time-chart";
-import { RankedBarChart } from "@/components/dashboard/ranked-bar-chart";
 import { StatCard, StatCardSkeleton } from "@/components/dashboard/stat-card";
 import { DASHBOARD_RANGES, DEFAULT_RANGE, useDashboardStats } from "@/hooks/use-dashboard";
 import { useUrlParams } from "@/hooks/use-url-params";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const PatientsOverTimeChart = dynamic(
+    () =>
+        import("@/components/dashboard/patients-over-time-chart").then((m) => m.PatientsOverTimeChart),
+    { ssr: false, loading: () => <Skeleton className="h-72 w-full" /> }
+);
+
+const RankedBarChart = dynamic(
+    () => import("@/components/dashboard/ranked-bar-chart").then((m) => m.RankedBarChart),
+    { ssr: false, loading: () => <Skeleton className="h-60 w-full" /> }
+);
+
+const BreakdownDonut = dynamic(
+    () => import("@/components/dashboard/breakdown-donut").then((m) => m.BreakdownDonut),
+    { ssr: false, loading: () => <Skeleton className="h-72 w-full" /> }
+);
 
 const DESCRIPTION = "Overview of doctors and patients";
 
