@@ -17,3 +17,6 @@ export function getInitials(name: string) {
 // The API treats "to" as midnight UTC, which would exclude the whole last day.
 // Sending the end of that day makes the range inclusive, as users expect.
 export const toEndOfDay = (date?: string) => (date ? `${date}T23:59:59.999Z` : undefined);
+
+// URL values are user-editable, so anything invalid falls back to page 1
+export const parsePage = (value: string | null) => Math.max(1, parseInt(value ?? "1", 10) || 1);
