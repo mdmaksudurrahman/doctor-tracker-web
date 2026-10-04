@@ -39,3 +39,21 @@ export type PageMeta = {
 };
 
 export type Paginated<T> = { items: T[]; meta: PageMeta };
+
+export type CountItem = { name: string; count: number };
+
+export type DashboardStats = {
+    range: { days: number; from: string };
+    totals: {
+        doctors: number;
+        patients: number;
+        newDoctors: number;
+        newPatients: number;
+        avgPatientsPerDoctor: number;
+    };
+    patientsPerDoctor: { doctorId: string; name: string; specialization: string; count: number }[];
+    patientsOverTime: { date: string; count: number }[];
+    conditions: CountItem[];
+    genders: CountItem[];
+    specializations: CountItem[];
+};

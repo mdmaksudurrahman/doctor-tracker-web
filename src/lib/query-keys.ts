@@ -15,4 +15,7 @@ export const patientKeys = {
         ["patients", "doctor", doctorId, params] as const,
 };
 
-export const dashboardKeys = { all: ["dashboard"] as const };
+export const dashboardKeys = {
+    all: ["dashboard"] as const,
+    stats: (days: number) => ["dashboard", "stats", days] as const,
+};
