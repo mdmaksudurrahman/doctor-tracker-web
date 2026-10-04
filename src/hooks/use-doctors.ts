@@ -1,7 +1,8 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { dashboardKeys, doctorKeys, patientKeys } from "@/lib/query-keys";
 import type { Doctor, Paginated } from "@/types";
 
 export const DOCTOR_SORTS = [
@@ -23,17 +24,18 @@ export type DoctorListParams = {
     limit?: number;
 };
 
-export const doctorKeys = {
-    all: ["doctors"] as const,
-    list: (params: DoctorListParams) => ["doctors", "list", params] as const,
-    filters: ["doctors", "filters"] as const,
+export type DoctorInput = {
+    name: string;
+    specialization: string;
+    hospital: string;
+    phone: string;
+    email: string;
 };
 
 export function useDoctors(params: DoctorListParams) {
     return useQuery({
         queryKey: doctorKeys.list(params),
         queryFn: () => api<Paginated<Doctor>>("/doctors", { params }),
-        // Keep showing the previous page while the next one loads: no flash of skeletons
         placeholderData: keepPreviousData,
     });
 }
@@ -43,5 +45,42 @@ export function useDoctorFilters() {
         queryKey: doctorKeys.filters,
         queryFn: () => api<{ specializations: string[]; hospitals: string[] }>("/doctors/filters"),
         staleTime: 5 * 60_000,
+    });
+}
+
+export function useDoctor(id: string) {
+    return useQuery({
+        queryKey: doctorKeys.detail(id),
+        queryFn: async () => (await api<{ doctor: Doctor }>(`/doctors/${id}`)).doctor,
+    });
+}
+
+export function useCreateDoctor() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (values: DoctorInput) =>
+            api<{ doctor: Doctor }>("/doctors", { method: "POST", body: values }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: doctorKeys.lists });
+            // A new doctor may bring a new specialization or hospital for the dropdowns
+            queryClient.invalidateQueries({ queryKey: doctorKeys.filters });
+            queryClient.invalidateQueries({ queryKey: dashboardKeys.all });
+        },
+    });
+}
+
+export function useDeleteDoctor() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) =>
+            api<{ message: string; patientsDeleted: number }>(`/doctors/${id}`, { method: "DELETE" }),
+        onSuccess: (_data, id) => {
+            queryClient.removeQueries({ queryKey: doctorKeys.detail(id) });
+            queryClient.invalidateQueries({ queryKey: doctorKeys.lists });
+            queryClient.invalidateQueries({ queryKey: doctorKeys.filters });
+            // The API deleted this doctor's patients too
+            queryClient.invalidateQueries({ queryKey: patientKeys.all });
+            queryClient.invalidateQueries({ queryKey: dashboardKeys.all });
+        },
     });
 }

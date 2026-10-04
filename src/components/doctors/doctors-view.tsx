@@ -11,12 +11,11 @@ import { DoctorFilters } from "@/components/doctors/doctor-filters";
 import { DoctorsTable, DoctorsTableSkeleton } from "@/components/doctors/doctors-table";
 import { DOCTOR_SORTS, useDoctors, type DoctorSort } from "@/hooks/use-doctors";
 import { useUrlParams } from "@/hooks/use-url-params";
-import { toEndOfDay } from "@/lib/format";
+import { parsePage, toEndOfDay } from "@/lib/format";
+import { AddDoctorDialog } from "@/components/doctors/add-doctor-dialog";
 
 const PAGE_SIZE = 10;
 
-// URL values are user-editable, so anything invalid falls back to a default
-const parsePage = (value: string | null) => Math.max(1, parseInt(value ?? "1", 10) || 1);
 const parseSort = (value: string | null): DoctorSort =>
     DOCTOR_SORTS.find((s) => s.value === value)?.value ?? "newest";
 
@@ -61,7 +60,11 @@ export function DoctorsView() {
 
     return (
         <>
-            <PageHeader title="Doctors" description="Search, filter and manage doctors" />
+            <PageHeader
+                title="Doctors"
+                description="Search, filter and manage doctors"
+                actions={<AddDoctorDialog />}
+            />
 
             <div className="space-y-4">
                 <DoctorFilters
