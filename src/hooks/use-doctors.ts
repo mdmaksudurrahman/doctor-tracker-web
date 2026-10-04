@@ -48,6 +48,23 @@ export function useDoctorFilters() {
     });
 }
 
+export type DoctorOption = { _id: string; name: string };
+
+// Feeds the doctor dropdowns on the Patients page. The API caps a page at 50
+// doctors, which is plenty here; a much larger roster would need a searchable picker.
+export function useDoctorOptions() {
+    return useQuery({
+        queryKey: doctorKeys.options,
+        queryFn: async () => {
+            const { items } = await api<Paginated<Doctor>>("/doctors", {
+                params: { limit: 50, sort: "name" },
+            });
+            return items.map(({ _id, name }): DoctorOption => ({ _id, name }));
+        },
+        staleTime: 5 * 60_000,
+    });
+}
+
 export function useDoctor(id: string) {
     return useQuery({
         queryKey: doctorKeys.detail(id),
@@ -64,6 +81,7 @@ export function useCreateDoctor() {
             queryClient.invalidateQueries({ queryKey: doctorKeys.lists });
             // A new doctor may bring a new specialization or hospital for the dropdowns
             queryClient.invalidateQueries({ queryKey: doctorKeys.filters });
+            queryClient.invalidateQueries({ queryKey: doctorKeys.options });
             queryClient.invalidateQueries({ queryKey: dashboardKeys.all });
         },
     });
