@@ -8,10 +8,10 @@ Doctor Tracker is a secure administrative portal for managing doctors and their 
 
 | | |
 |---|---|
-| **Live app** | `https://<your-app>.vercel.app` |
+| **Live app** | `https://doctor-tracker-web-gamma.vercel.app` |
 | **Live API** | `https://doctor-tracker-api-cx5r.onrender.com` (health check: `/api/health`) |
 | **Backend repository** | `https://github.com/mdmaksudurrahman/doctor-tracker-api` |
-| **Demo login** | Email: `<admin email>` / Password: `<admin password>` |
+| **Demo login** | Email: `admin@doctortracker.com` / Password: `Admin@12345` |
 
 > The API runs on Render's free tier, which sleeps after about 15 minutes without traffic. The first request can take 30 to 60 seconds. The app shows a "this is taking longer than usual" notice when that happens, so a slow first load is expected.
 
