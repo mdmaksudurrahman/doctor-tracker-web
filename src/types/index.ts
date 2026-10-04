@@ -1,0 +1,41 @@
+export type User = {
+    id: string;
+    name: string;
+    email: string;
+    role: "admin";
+};
+
+export type Gender = "male" | "female" | "other";
+
+export type Doctor = {
+    _id: string;
+    name: string;
+    specialization: string;
+    hospital: string;
+    phone: string;
+    email: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type Patient = {
+    _id: string;
+    name: string;
+    age: number;
+    gender: Gender;
+    condition: string;
+    phone?: string;
+    // The list endpoints populate the doctor with these two fields
+    doctor: { _id: string; name: string; specialization: string };
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type PageMeta = {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+};
+
+export type Paginated<T> = { items: T[]; meta: PageMeta };
